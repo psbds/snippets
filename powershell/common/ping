@@ -1,0 +1,14 @@
+$rootUrl = ""
+$numberOfSeconds = 60
+for($tryIndex=0; $tryIndex -le $numberOfSeconds; $tryIndex++){  
+    try{
+        $time =  Measure-Command{Invoke-WebRequest $rootUrl -UseBasicParsing -ErrorAction Stop -ErrorVariable siteIsNotAlive}
+        Write-Host "Site is running"
+        Write-Host "wget $rootUrl in $($time.TotalSeconds)"
+        break;
+    }
+    catch{
+        Write-Host "Sleeping"
+        Start-Sleep -s 1
+    }
+}
