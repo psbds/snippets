@@ -1,0 +1,37 @@
+$site1Name = ''
+$site2Name = ''
+
+$site1 = Get-Website | Where {$_.Name -eq $site1Name}
+$site2 = Get-Website | Where {$_.Name -eq $site2Name}
+$site1Bindings = $site1 | Get-WebBinding
+$site2Bindings = $site2 | Get-WebBinding
+
+$site1 | Get-WebBinding | Remove-WebBinding
+$site2 | Get-WebBinding | Remove-WebBinding
+
+function Copy-Bindings
+{
+ param($siteA_Bindings,  [string]$siteB_Name )
+
+    foreach ($binding in $siteA_Bindings)
+    {
+        $bindingInformation = $binding['bindingInformation'].Split(':')
+        $ip = $bindingInformation[0]
+        $port = $bindingInformation[1]
+
+        if ($bindingInformation.Length > 2)
+        {   
+            $hostRecord = $bindingInformation[2]
+        }
+        else
+        {   
+            $hostRecord = ''
+        }
+
+        $protocol = $binding['protocol']
+        New-WebBinding -Name $siteB_Name -Port $port -Protocol $protocol -IPAddress $ip -HostHeader $hostRecord
+    }
+}
+
+Copy-Bindings $site1Bindings $site2Name
+Copy-Bindings $site2Bindings $site1Name
