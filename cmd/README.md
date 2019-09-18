@@ -1,4 +1,4 @@
-* Instructions for persistent aliases
+# Instructions for persistent aliases
 
 1. Create a .bat or .cmd file with your DOSKEY commands.
 
